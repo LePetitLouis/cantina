@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+
+// Material components
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
     return (
-        <AppBar position="static">
-            <Toolbar>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" className={classes.title}>
-                News
-                </Typography>
-            </Toolbar>
-        </AppBar>
+        <header>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography variant="h5">
+                        <Link to='/' style={{ color: 'white' }}>Cantina</Link>
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+        </header>
+        
     );
 }
 
