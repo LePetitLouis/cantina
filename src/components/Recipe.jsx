@@ -17,7 +17,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 
-function Recipe({id, titre, description, niveau, personnes, tempsPreparation, photo}) {
+function Recipe({id, titre, description, photo, onListRecipes}) {
 
     const [open, setOpen] = useState(false)
 
@@ -33,7 +33,8 @@ function Recipe({id, titre, description, niveau, personnes, tempsPreparation, ph
 
     // Delete recipe
     const handleDelete = (id) => {
-        setOpen(false);
+        onListRecipes(id)
+        setOpen(false)
     }
 
     return (
@@ -55,28 +56,27 @@ function Recipe({id, titre, description, niveau, personnes, tempsPreparation, ph
                         {description}
                     </Typography>
                 </CardContent>
-
-                <CardActions>
-                    <Button 
-                        variant="contained" 
-                        color="primary"
-                        size="small" 
-                        startIcon={<CreateIcon />}
-                    >
-                        Modifier
-                    </Button>
-                    <Button 
-                        variant="contained"
-                        color="secondary"
-                        size="small" 
-                        startIcon={<DeleteIcon />}
-                        onClick={handleClickOpen}
-                    >
-                        Supprimer
-                    </Button>
-                </CardActions>
-
             </Link>
+            <CardActions>
+                <Button 
+                    variant="contained" 
+                    color="primary"
+                    size="small" 
+                    startIcon={<CreateIcon />}
+                >
+                    Modifier
+                </Button>
+                <Button 
+                    variant="contained"
+                    color="secondary"
+                    size="small" 
+                    startIcon={<DeleteIcon />}
+                    onClick={handleClickOpen}
+                >
+                    Supprimer
+                </Button>
+            </CardActions>
+            
         </Card>
 
         <Dialog
@@ -85,16 +85,17 @@ function Recipe({id, titre, description, niveau, personnes, tempsPreparation, ph
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
         >
-        <DialogTitle id="alert-dialog-slide-title">Voullez-vous vraiment supprimer cette recette ?</DialogTitle>
-        <DialogActions>
-        <Button onClick={handleClose} color="primary">
-            Fermer
-        </Button>
-        <Button onClick={handleDelete} color="primary">
-            Supprimer
-        </Button>
-        </DialogActions>
+            <DialogTitle id="alert-dialog-slide-title">Voullez-vous vraiment supprimer cette recette ?</DialogTitle>
+            <DialogActions>
+            <Button onClick={handleClose} color="primary">
+                Fermer
+            </Button>
+            <Button onClick={() => handleDelete(id)} color="primary">
+                Supprimer
+            </Button>
+            </DialogActions>
         </Dialog>
+
         </>
     );
 }
