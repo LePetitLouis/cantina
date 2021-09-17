@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // Material components
 import { Box, Button, Container, Fab, Typography } from '@material-ui/core';
@@ -8,51 +8,54 @@ import InputBase from '@material-ui/core/InputBase';
 // Icon
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import CloseIcon from '@material-ui/icons/Close';
+
+// Formik
+import { FieldArray, useFormik } from 'formik';
 
 function AddRecipe() {
-    const [title, setTitle] = useState()
-    const [description, setDescription] = useState()
-    const [level, setLevel] = useState()
-    const [numberPerson, setNumberPerson] = useState(0)
-    const [listIngredient, setListIngredient] = useState([
-        <Box mt={2}>
-            <TextField id="input-quantity" label="Quantité" style={{ marginRight: '2%' }} />
-            <TextField id="input-libelle" label="Libellé" />
-        </Box>
-    ])
+    const formik = useFormik({
+        initialValues: {
+            title: '',
+            description: '',
+            level: '',
+            numberPerson: 0,
+            preparationTime: 0,
+            ingredients: [{
+                id: Math.random(),
+                quantity: '',
+                libelle: ''
+            }],
+            preparation: [{
+                etape: ''
+            }]
+        },
 
-    const changeTitle = (event) => {
-        setTitle(event.target.value)
-    }
-
-    const changeDescription = (event) => {
-        setDescription(event.target.value)
-    }
-
-    const changeLevel = (label) => {
-        setLevel(label)
-    }
-
-    const changeNumberPerson = (event) => {
-        if(event.target.value === '') return setNumberPerson(0)
-        setNumberPerson(parseInt(event.target.value, 10))
-    }
-
-    const handleClickNumberPerson = (evt) => {
-        if(evt === "remove" && numberPerson > 0) setNumberPerson(numberPerson - 1)
-        else if(evt === 'add') setNumberPerson(numberPerson + 1)
-        else return 
-    }
+    })
 
     return (
             <Container style={{ marginTop: '2%' }}>
                 <form>
                     <Box display="block" mb={4}>
-                        <TextField id="input-title" label="Titre" value={title} onChange={changeTitle} style={{ width: '25%' }} />
+                        <TextField 
+                            id="title"
+                            name="title"
+                            value={formik.values.title} 
+                            onChange={formik.handleChange}
+                            label="Titre" 
+                            fullWidth
+                        />
                     </Box>
 
                     <Box display="block" mb={4}>
-                        <TextField id="input-description" label="Description" value={description} onChange={changeDescription} style={{ width: '100%' }} />
+                        <TextField 
+                            id="description"
+                            name="description"
+                            value={formik.values.description}
+                            onChange={formik.handleChange} 
+                            label="Description" 
+                            fullWidth
+                        />
                     </Box>
 
                     <Box display="flex" justifyContent="space-evenly" flexWrap="wrap" mb={4}>
@@ -61,9 +64,9 @@ function AddRecipe() {
                             Niveau *
                         </Typography>
                         <Box display="flex" justifyContent="center" mt={2}>
-                            <Button onClick={() => changeLevel("padawan")} variant="outlined" color={ level === 'padawan' ? "secondary" : "default" }>Padawan</Button>
-                            <Button onClick={() => changeLevel("jedi")} variant="outlined" color={ level === 'jedi' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Jedi</Button>
-                            <Button onClick={() => changeLevel("maitre")} variant="outlined" color={ level === 'maitre' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Maitre</Button>
+                            <Button onClick={() => formik.setFieldValue("level", "padawan")} variant="outlined" color={ formik.values.level === 'padawan' ? "secondary" : "default" }>Padawan</Button>
+                            <Button onClick={() => formik.setFieldValue("level", "jedi")} variant="outlined" color={ formik.values.level === 'jedi' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Jedi</Button>
+                            <Button onClick={() => formik.setFieldValue("level", "maitre")} variant="outlined" color={ formik.values.level === 'maitre' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Maitre</Button>
                         </Box>
                     </Box>
 
@@ -72,9 +75,15 @@ function AddRecipe() {
                             Nombre de personnes *
                         </Typography>
                         <Box display="flex" justifyContent="center" mt={2}>
-                            <Fab size="small" color="secondary" onClick={() => handleClickNumberPerson('remove')}><RemoveIcon /></Fab>
-                            <InputBase id="input-numberPerson" value={numberPerson} onChange={changeNumberPerson} style={{ width: '20%' }} />
-                            <Fab size="small" color="primary" onClick={() => handleClickNumberPerson('add')}><AddIcon /></Fab>
+                            <Fab size="small" color="secondary" onClick={() => formik.setFieldValue('numberPerson', formik.values.numberPerson - 1)}><RemoveIcon /></Fab>
+                            <InputBase 
+                                type="number"
+                                id="numberPerson"
+                                name="numberPerson"
+                                value={formik.values.numberPerson}
+                                onChange={formik.handleChange}
+                                style={{ width: '20%' }} />
+                            <Fab size="small" color="primary" onClick={() => formik.setFieldValue('numberPerson', formik.values.numberPerson + 1)}><AddIcon /></Fab>
                         </Box>
                     </Box>
                     </Box>
@@ -82,33 +91,47 @@ function AddRecipe() {
                     <Box display="block" mb={2}>
                         Temps de préparation
                     </Box>
-
-                    {/* <Box display="block" mb={2}>
-                        <Typography variant="h5">
-                            Ingrédients
-                        </Typography>
-                        <Fab color="primary" aria-label="add">
-                            <AddIcon />
-                        </Fab>
-                        <Box mt={2}>
-                            <TextField id="input-quantity" label="Quantité" style={{ marginRight: '2%' }} />
-                            <TextField id="input-libelle" label="Libellé" />
-                        </Box>
-                    </Box> */}
                     
                     <Box display="block" mb={4}>
-                        <Typography>
-                            Ingrédients
-                        </Typography>
-                        {listIngredient.map(() => (
-                            <Box mt={2}>
-                                <TextField id="input-quantity" label="Quantité" style={{ marginRight: '2%' }} />
-                                <TextField id="input-libelle" label="Libellé" style={{ marginRight: '2%', width: '45%' }} />
-                                <Fab size="small" color="primary">
+                        <FieldArray name="ingredients"
+                            render={ arrayHelpers => (
+                                <Box>
+                                <Typography>
+                                    Ingrédients
+                                </Typography>
+                                
+                                {formik.values.ingredients.map((ingredient, index) => (
+                                    <Box key={index} mt={2}>
+                                        <TextField 
+                                            id="input-quantity" 
+                                            label="Quantité"
+                                            name={`ingredients.[${index}].quantity`}
+                                            style={{ marginRight: '2%' }} 
+                                        />
+                                        <TextField 
+                                            id="input-libelle" 
+                                            label="Libellé"
+                                            name={`ingredients.[${index}].libelle`}
+                                            style={{ marginRight: '2%', width: '45%' }} />
+                                        <Fab 
+                                            size="small" 
+                                            color="secondary"
+                                            onClick={() => arrayHelpers.remove(index)}
+                                        >
+                                            <CloseIcon />
+                                        </Fab>
+                                    </Box>
+                                ))}
+                                <Fab 
+                                    size="small" 
+                                    color="primary"
+                                    onClick={() => arrayHelpers.push({ id: Math.random(), quantity: "", libelle: "" })}
+                                >
                                     <AddIcon />
                                 </Fab>
-                            </Box>
-                        ))}
+                                </Box>
+                            )}
+                        />
                     </Box>
 
                     <Box display="block" mb={2}>
@@ -128,6 +151,9 @@ function AddRecipe() {
                             </Box>
                         </Box>
                     </Box>
+                    <Button color="primary" variant="contained" fullWidth type="submit">
+                        Submit
+                    </Button>
                 </form>
             </Container>
         

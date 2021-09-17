@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // Service provider api 
 import restfullProvider from '../services/restfullProvider.js';
+import FilterContext from '../services/filterContext'
 
 // Components
 import Recipe from '../components/Recipe.jsx';
@@ -32,6 +33,8 @@ function Home() {
     const classes = useStyle();
 
     let history = useHistory();
+
+    const { listFilter } = useContext(FilterContext)
 
     // Retrieve all recipes
     useEffect(() => {
@@ -65,7 +68,44 @@ function Home() {
                     direction="row"
                     justifyContent="center"
                 >
-                    {recipes && recipes.map(recipe => (
+                    {recipes && 
+                    recipes.filter(recipe => listFilter.title !== undefined ? recipe.titre.toLowerCase().includes(listFilter.title?.toLowerCase()) : true)
+                    .filter(recipe => listFilter.level !== undefined ? recipe.niveau === listFilter.level : true )
+                    .filter(recipe => {
+                        let isFilter = true
+                        switch(listFilter.numberPerson) {
+                            case 1:
+                                isFilter = recipe.personnes >= 1 && recipe.personnes <= 3
+                                break;
+                            case 2:
+                                isFilter = recipe.personnes >= 4 && recipe.personnes <= 6
+                                break;
+                            case 3: 
+                                isFilter = recipe.personnes >= 7
+                                break;
+                            default:
+                                break;
+                        }
+                        return isFilter
+                    })
+                    .filter(recipe => {
+                        let isFilter = true
+                        switch(listFilter.preparationTime) {
+                            case 15:
+                                isFilter = recipe.tempsPreparation <= 15
+                                break;
+                            case 30:
+                                isFilter = recipe.tempsPreparation <= 30
+                                break;
+                            case 45: 
+                                isFilter = recipe.tempsPreparation <= 45
+                                break;
+                            default:
+                                break;
+                        }
+                        return isFilter
+                    })
+                    .map(recipe => (
                         <Grid key={recipe.id} item  style={{ width: "300px" }}>
                             <Recipe 
                                 id={recipe.id}

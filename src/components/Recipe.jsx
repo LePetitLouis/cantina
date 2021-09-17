@@ -88,7 +88,7 @@ function Recipe({id, titre, description, photo, onListRecipes}) {
             <DialogTitle id="alert-dialog-slide-title">Voullez-vous vraiment supprimer cette recette ?</DialogTitle>
             <DialogActions>
             <Button onClick={handleClose} color="primary">
-                Fermer
+                Annuler
             </Button>
             <Button onClick={() => handleDelete(id)} color="primary">
                 Supprimer
