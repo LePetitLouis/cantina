@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 
 import restfullProvider from '../services/restfullProvider.js';
 
+// Component
+import Alert from '../components/Alert.jsx';
+
 //Material components
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -13,16 +16,18 @@ import Box from '@material-ui/core/Box';
 import TimerIcon from '@material-ui/icons/Timer';
 import GroupIcon from '@material-ui/icons/Group';
 import ReportIcon from '@material-ui/icons/Report';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 function InfoRecipe() {
     const {id} = useParams()
 
     const [recipe, setRecipe] = useState()
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         restfullProvider.getRecipeById(id)
             .then(response => setRecipe(response.data))
-            .catch(err => console.log(err))
+            .catch(() => setIsError(true))
     }, [])
 
     return (
@@ -39,36 +44,28 @@ function InfoRecipe() {
 
                 <img src={recipe.photo} alt={recipe.titre} />
 
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item>
-                                <TimerIcon fontSize="large" />
-                                <Typography variant="h6" component="h2">
-                                    {recipe.tempsPreparation} min
-                                </Typography>
-                            </Grid>
-                            •
-                            <Grid item>
-                                <ReportIcon fontSize="large" />
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="h6" component="h2">
-                                    {recipe.niveau}
-                                </Typography>
-                            </Grid>
-                            •
-                            <Grid item>
-                                <GroupIcon fontSize="large" />
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="h6" component="h2">
-                                    {recipe.personnes} {recipe.personnes === 1 ? 'personne' : 'personnes'}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
+                <Box display="flex" justifyContent="center" mb={4} mt={4}>
+                    <Box display="flex" mr={4}>
+                        <TimerIcon fontSize="large" color="secondary" />
+                        <Typography variant="h6" component="h2" style={{ marginLeft: '10px' }}>
+                            {recipe.tempsPreparation} min
+                        </Typography>
+                    </Box>
+                    <FiberManualRecordIcon fontSize="small" style={{ alignSelf: 'center' }} />
+                    <Box display="flex" ml={4} mr={4}>
+                        <ReportIcon fontSize="large" color="secondary" />
+                        <Typography variant="h6" component="h2" style={{ marginLeft: '10px' }}>
+                            {recipe.niveau}
+                        </Typography>
+                    </Box>
+                    <FiberManualRecordIcon fontSize="small" style={{ alignSelf: 'center' }} />
+                    <Box display="flex" ml={4}>
+                        <GroupIcon fontSize="large" color="secondary" />
+                        <Typography variant="h6" component="h2" style={{ marginLeft: '10px' }}>
+                            {recipe.personnes} {recipe.personnes === 1 ? 'personne' : 'personnes'}
+                        </Typography>
+                    </Box>
+                </Box>
 
                 <Typography variant="h4" component="h2" align="center" color="secondary">
                     Ingrédients
@@ -98,9 +95,9 @@ function InfoRecipe() {
                         </Typography>
                     </Box>
                 ))}
-
             </>
             }
+            {isError && <Alert message="Problème de connection" severity="error" />}
         </Container>
     );
 }
