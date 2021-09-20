@@ -1,48 +1,129 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+// Service provider api 
+import restfullProvider from '../services/restfullProvider.js';
+
+// Components
+import Alert from '../components/Alert.jsx';
 
 // Material components
-import { Box, Button, Container, Fab, Typography } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import InputBase from '@material-ui/core/InputBase';
+import { Box, Button, Container, Fab, Typography, TextField, InputBase } from '@material-ui/core';
 
-// Icon
+// Material icon
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import CloseIcon from '@material-ui/icons/Close';
 
 // Formik
-import { FieldArray, useFormik } from 'formik';
+import { FieldArray, Form, Formik } from 'formik';
+
+// History router
+import { useHistory, useParams } from 'react-router-dom'
 
 function AddRecipe() {
-    const formik = useFormik({
-        initialValues: {
-            title: '',
-            description: '',
-            level: '',
-            numberPerson: 0,
-            preparationTime: 0,
-            ingredients: [{
-                id: Math.random(),
-                quantity: '',
-                libelle: ''
-            }],
-            preparation: [{
-                etape: ''
-            }]
-        },
-
+    const [alertMessage, setAlertMessage] = useState(false);
+    const [form, setForm] = useState({
+        titre: '',
+        description: '',
+        niveau: '',
+        personnes: 0,
+        tempsPreparation: '',
+        ingredients: [{
+            id: Math.random(),
+            quantity: '',
+            libelle: ''
+        }],
+        etapes: [{
+            id: Math.random(),
+            etape: ''
+        }],
+        photo: ''
     })
 
+    const {id} = useParams()
+    let history = useHistory();
+
+    useEffect(() => {
+        if(history.location.pathname !== "/add-recipe"){
+            restfullProvider.getRecipeById(id)
+                .then(response => {
+                    setForm(prevState => {
+                        return {
+                            ...prevState,
+                            titre: response.data.titre,
+                            description: response.data.description,
+                            niveau: response.data.niveau,
+                            personnes: response.data.personnes,
+                            tempsPreparation: response.data.tempsPreparation,
+                            photo: response.data.photo,
+                        }
+                    })
+                    response.data.ingredients.forEach((ingredient, index) => {
+                        setForm(prevState => {
+                            return {
+                                ...prevState,
+                                ingredients: [
+                                    ...prevState.ingredients,
+                                    { id: index, quantity: ingredient[0], libelle: ingredient[2] }
+                                ]
+                            }
+                        })
+                    })
+                    response.data.etapes.forEach((etape, index) => {
+                        setForm(prevState => {
+                            return {
+                                ...prevState,
+                                etapes: [
+                                    ...prevState.etapes,
+                                    { id: index, etape: etape }
+                                ]
+                            }
+                        })
+                    })
+                })
+                .catch(response => setAlertMessage(<Alert message={response.message} severity="success" />))
+        }
+    }, [])
+
     return (
+        <Formik 
+            initialValues = {{
+                titre: form.titre,
+                description: form.description,
+                niveau: form.niveau,
+                personnes: form.personnes,
+                tempsPreparation: form.tempsPreparation,
+                ingredients: form.ingredients,
+                etapes: form.etapes,
+                photo: form.photo
+            }}
+            onSubmit={values => {
+                let etapes = []
+                values.etapes.map(preparation => etapes.push(preparation.etape))
+                values = {...values, ingredients: values.ingredients.map(ingredient => Object.values(ingredient).splice(1))}
+                values = {...values, etapes}
+                setAlertMessage()
+                
+                restfullProvider.createRecipe(values)
+                    .then(() => {
+                        setAlertMessage(<Alert message="Recette créée avec succès !" severity="success" />)
+                        history.push('/');
+                    })
+                    .catch(() => {
+                        setAlertMessage(<Alert message="Un problème est survenu, veuillez réessayer" severity="error" />)
+                    })
+            }}
+            render={({values, handleChange, setFieldValue}) => (
             <Container style={{ marginTop: '2%' }}>
-                <form>
+                <Form>
                     <Box display="block" mb={4}>
                         <TextField 
-                            id="title"
-                            name="title"
-                            value={formik.values.title} 
-                            onChange={formik.handleChange}
+                            id="titre"
+                            name="titre"
+                            value={values.titre} 
+                            onChange={handleChange}
                             label="Titre" 
+                            required
                             fullWidth
                         />
                     </Box>
@@ -51,45 +132,70 @@ function AddRecipe() {
                         <TextField 
                             id="description"
                             name="description"
-                            value={formik.values.description}
-                            onChange={formik.handleChange} 
+                            value={values.description}
+                            onChange={handleChange} 
                             label="Description" 
+                            required
+                            fullWidth
+                        />
+                    </Box>
+
+                    <Box display="block" mb={4}>
+                        <TextField 
+                            id="photo"
+                            name="photo"
+                            value={values.photo} 
+                            onChange={handleChange}
+                            label="Url de la photo" 
                             fullWidth
                         />
                     </Box>
 
                     <Box display="flex" justifyContent="space-evenly" flexWrap="wrap" mb={4}>
-                    <Box display="block"mb={4}>
-                        <Typography align="center">
-                            Niveau *
-                        </Typography>
-                        <Box display="flex" justifyContent="center" mt={2}>
-                            <Button onClick={() => formik.setFieldValue("level", "padawan")} variant="outlined" color={ formik.values.level === 'padawan' ? "secondary" : "default" }>Padawan</Button>
-                            <Button onClick={() => formik.setFieldValue("level", "jedi")} variant="outlined" color={ formik.values.level === 'jedi' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Jedi</Button>
-                            <Button onClick={() => formik.setFieldValue("level", "maitre")} variant="outlined" color={ formik.values.level === 'maitre' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Maitre</Button>
-                        </Box>
-                    </Box>
+                        <Box display="block" mb={4}>
+                            <Typography>
+                                Temps de préparation
+                            </Typography>
 
-                    <Box display="block" mb={2}>
-                        <Typography align="center">
-                            Nombre de personnes *
-                        </Typography>
-                        <Box display="flex" justifyContent="center" mt={2}>
-                            <Fab size="small" color="secondary" onClick={() => formik.setFieldValue('numberPerson', formik.values.numberPerson - 1)}><RemoveIcon /></Fab>
-                            <InputBase 
+                            <TextField 
                                 type="number"
-                                id="numberPerson"
-                                name="numberPerson"
-                                value={formik.values.numberPerson}
-                                onChange={formik.handleChange}
-                                style={{ width: '20%' }} />
-                            <Fab size="small" color="primary" onClick={() => formik.setFieldValue('numberPerson', formik.values.numberPerson + 1)}><AddIcon /></Fab>
+                                id="tempsPreparation"
+                                name="tempsPreparation"
+                                value={values.tempsPreparation}
+                                onChange={handleChange} 
+                                label="Temps en minutes" 
+                                required
+                            />
                         </Box>
-                    </Box>
-                    </Box>
 
-                    <Box display="block" mb={2}>
-                        Temps de préparation
+                        <Box display="block"mb={4}>
+                            <Typography align="center">
+                                Niveau *
+                            </Typography>
+                            <Box display="flex" justifyContent="center" mt={2}>
+                                <Button onClick={() => setFieldValue("niveau", "padawan")} variant="outlined" color={ values.niveau === 'padawan' ? "secondary" : "default" }>Padawan</Button>
+                                <Button onClick={() => setFieldValue("niveau", "jedi")} variant="outlined" color={ values.niveau === 'jedi' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Jedi</Button>
+                                <Button onClick={() => setFieldValue("niveau", "maitre")} variant="outlined" color={ values.niveau === 'maitre' ? "secondary" : "default" } style={{ marginLeft: "4%" }}>Maitre</Button>
+                            </Box>
+                        </Box>
+
+                        <Box display="block" mb={2}>
+                            <Typography align="center">
+                                Nombre de personne *
+                            </Typography>
+                            <Box display="flex" justifyContent="center" mt={2}>
+                                <Fab size="small" color="secondary" onClick={() => setFieldValue('personnes', values.personnes - 1)}><RemoveIcon /></Fab>
+                                <InputBase 
+                                    type="number"
+                                    id="personnes"
+                                    name="personnes"
+                                    value={values.personnes}
+                                    onChange={handleChange}
+                                    required
+                                    style={{ width: '20%' }} />
+                                <Fab size="small" color="primary" onClick={() => setFieldValue('personnes', values.personnes + 1)}><AddIcon /></Fab>
+                            </Box>
+                        </Box>
                     </Box>
                     
                     <Box display="block" mb={4}>
@@ -99,19 +205,32 @@ function AddRecipe() {
                                 <Typography>
                                     Ingrédients
                                 </Typography>
+                                <Fab 
+                                    size="small" 
+                                    color="primary"
+                                    onClick={() => arrayHelpers.push({ id: Math.random(), quantity: "", libelle: "" })}
+                                >
+                                    <AddIcon />
+                                </Fab>
                                 
-                                {formik.values.ingredients.map((ingredient, index) => (
+                                {values.ingredients.map((ingredient, index) => (
                                     <Box key={index} mt={2}>
                                         <TextField 
                                             id="input-quantity" 
-                                            label="Quantité"
+                                            label="Quantitées"
                                             name={`ingredients.[${index}].quantity`}
+                                            value={ingredient.quantity}
+                                            onChange={handleChange}
+                                            required
                                             style={{ marginRight: '2%' }} 
                                         />
                                         <TextField 
                                             id="input-libelle" 
-                                            label="Libellé"
+                                            label="Ingrédient"
                                             name={`ingredients.[${index}].libelle`}
+                                            value={ingredient.libelle}
+                                            onChange={handleChange}
+                                            required
                                             style={{ marginRight: '2%', width: '45%' }} />
                                         <Fab 
                                             size="small" 
@@ -122,40 +241,76 @@ function AddRecipe() {
                                         </Fab>
                                     </Box>
                                 ))}
-                                <Fab 
-                                    size="small" 
-                                    color="primary"
-                                    onClick={() => arrayHelpers.push({ id: Math.random(), quantity: "", libelle: "" })}
-                                >
-                                    <AddIcon />
-                                </Fab>
                                 </Box>
                             )}
                         />
                     </Box>
 
-                    <Box display="block" mb={2}>
-                        <Typography>
-                            Préparation
-                        </Typography>
-                        
-                        <Box mt={2}>
-                            <Typography>
-                                Étape 1
-                            </Typography>
-                            <Box mt={2}>
-                                <TextField label="Description" style={{ width: '75%' }} />
-                                <Fab size="small" color="primary" aria-label="add">
-                                    <AddIcon />
-                                </Fab>
-                            </Box>
+                    <Box display="block" mb={4}>
+                            <FieldArray name="etapes"
+                                render={ arrayHelpers => (
+                                    <Box>
+                                    <Typography>
+                                        Préparation
+                                    </Typography>
+                                    <Fab 
+                                        size="small" 
+                                        color="primary"
+                                        onClick={() => arrayHelpers.push({ id: Math.random(), etape: "" })}
+                                    >
+                                        <AddIcon />
+                                    </Fab>
+                                    
+                                    {values.etapes.map((etape, index) => (
+                                        <Box key={index} mt={2}>
+                                            <Typography>
+                                                Étape {index+1}
+                                            </Typography>
+                                            <TextField 
+                                                id="input-etape" 
+                                                label="Description"
+                                                name={`etapes.[${index}].etape`}
+                                                value={etape.etape}
+                                                onChange={handleChange}
+                                                required
+                                                style={{ width: '90%' }}
+                                            />
+                                            <Fab 
+                                                size="small" 
+                                                color="secondary"
+                                                onClick={() => arrayHelpers.remove(index)}
+                                            >
+                                                <CloseIcon />
+                                            </Fab>
+                                        </Box>
+                                    ))}
+                                    </Box>
+                                )}
+                            />
                         </Box>
-                    </Box>
-                    <Button color="primary" variant="contained" fullWidth type="submit">
-                        Submit
-                    </Button>
-                </form>
+
+                    { history.location.pathname !== "/add-recipe" ? 
+                        <Button color="primary" variant="contained" type="submit">
+                            Mettre à jour la recette
+                        </Button>
+                    :
+                        <Button color="primary" variant="contained" type="submit">
+                            Ajouter une nouvelle recette
+                        </Button>
+                    }
+                    
+
+                    <pre style={{ textAlign: "left" }}>
+                    <strong>Values</strong>
+                    <br />
+                    {JSON.stringify(values, null, 2)}
+                    </pre>
+                </Form>
+
+                {alertMessage}
             </Container>
+            )}
+        />
         
     );
 }

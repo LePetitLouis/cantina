@@ -38,6 +38,7 @@ function App() {
           <Route path="/" exact component={Home} />
           <Route path="/add-recipe" exact component={AddRecipe} />
           <Route path="/recipe/:id" component={InfoRecipe} />
+          <Route path="/edit-recipe/:id" component={AddRecipe} />
         </Switch>
       </main>
 

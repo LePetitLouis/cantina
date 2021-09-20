@@ -9,13 +9,16 @@ import Recipe from '../components/Recipe.jsx';
 import Alert from '../components/Alert.jsx';
 
 //Material components
-import { Container } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import Fab from '@material-ui/core/Fab';
+import { Container, Grid, Box, Fab } from '@material-ui/core';
+
+
+// Material icon
 import AddIcon from '@material-ui/icons/Add';
+
+// Material style
 import { makeStyles } from '@material-ui/styles';
 
+// History router
 import { useHistory } from 'react-router-dom'
 
 const useStyle = makeStyles((theme) => ({

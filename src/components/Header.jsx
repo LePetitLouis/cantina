@@ -5,25 +5,14 @@ import { Link } from 'react-router-dom';
 import FilterContext from '../services/filterContext'
 
 // Material components
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Paper } from '@material-ui/core';
-import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-//import Chip from '@material-ui/core/Chip';
+import {AppBar, Toolbar, Typography, Paper, InputBase, Divider, Accordion, AccordionSummary, AccordionDetails, Box, Button} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-// Icon
+// Material icon
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import FilterListIcon from '@material-ui/icons/FilterList';
-
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -57,16 +46,8 @@ function Header() {
     const classes = useStyles();
 
     const [openFilter, setOpenFilter] = useState(false)
-    //const [level, setLevel] = useState('')
-    // const [title, setTitle] = useState('')
-    // const [listFilter, setListFilter] = useState({
-    //     level: '',
-    //     numberPerson: '',
-    //     preparationTime: ''
-    // })
 
     const { listFilter, updateFilter } = useContext(FilterContext)
-    console.log('Header ->', useContext(FilterContext))
 
     const toggleFilter = () => {
         openFilter ? setOpenFilter(false) : setOpenFilter(true)
@@ -89,18 +70,12 @@ function Header() {
             case 'preparationTime':
                     if(listFilter.preparationTime === libelle) updateFilter({...listFilter, preparationTime: undefined})
                     else updateFilter({...listFilter, preparationTime: libelle})
-                    console.log(listFilter)
                     break;
             default:
                 break;
         }
 
     }
-
-    // const addPreparationTimeFilter = (libelle) => {
-    //     setListFilter({...listFilter, preparationTime: libelle})
-    //     console.log(listFilter)
-    // }
 
     return (
         <AppBar position="static">

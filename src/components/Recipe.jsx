@@ -3,33 +3,15 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // Material components
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {Card, CardMedia, CardContent, CardActions, Button, Typography, Dialog, DialogActions, DialogTitle} from '@material-ui/core';
 
-// Icon
+// Material icon
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 
 function Recipe({id, titre, description, photo, onListRecipes}) {
 
     const [open, setOpen] = useState(false)
-
-    // Open modal delete recipe
-    const handleClickOpen = () => {
-        setOpen(true);
-    }
-
-    // Close modal
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     // Delete recipe
     const handleDelete = (id) => {
@@ -63,6 +45,7 @@ function Recipe({id, titre, description, photo, onListRecipes}) {
                     color="primary"
                     size="small" 
                     startIcon={<CreateIcon />}
+                    to={{ pathname: '/update-recipe/'+ id }}
                 >
                     Modifier
                 </Button>
@@ -71,7 +54,7 @@ function Recipe({id, titre, description, photo, onListRecipes}) {
                     color="secondary"
                     size="small" 
                     startIcon={<DeleteIcon />}
-                    onClick={handleClickOpen}
+                    onClick={() => setOpen(true)}
                 >
                     Supprimer
                 </Button>
@@ -81,13 +64,13 @@ function Recipe({id, titre, description, photo, onListRecipes}) {
 
         <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
         >
             <DialogTitle id="alert-dialog-slide-title">Voullez-vous vraiment supprimer cette recette ?</DialogTitle>
             <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={() => setOpen(false)} color="primary">
                 Annuler
             </Button>
             <Button onClick={() => handleDelete(id)} color="primary">
