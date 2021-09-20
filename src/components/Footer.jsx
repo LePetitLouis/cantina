@@ -1,16 +1,18 @@
 import React from 'react';
 
 // Material components
-import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
+import { Box, Divider, Typography, AppBar } from '@material-ui/core';
 
 function Navbar() {
     return (
-        <AppBar position="sticky" color="default" >
-            <Typography variant="span" align="center">
-                Réaliser et Développer avec ♥️ par Louis Poupat
-            </Typography>
-        </AppBar>
+        <>
+            <Divider orientation="vertical" style={{ width: '80%', margin: 'auto', height: '2px' }} />
+            <Box m={2} style={{ textAlign: 'center' }}>
+                <Typography variant="span">
+                    © 2021 Cantina, Inc. All rights reserved.
+                </Typography>
+            </Box>
+        </>
     );
 }
 
