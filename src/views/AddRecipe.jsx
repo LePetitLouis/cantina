@@ -39,6 +39,7 @@ function AddRecipe() {
         }],
         photo: ''
     })
+    const [showForm, setShowForm] = useState(false)
 
     const {id} = useParams()
     let history = useHistory();
@@ -58,13 +59,13 @@ function AddRecipe() {
                             photo: response.data.photo,
                         }
                     })
-                    response.data.ingredients.forEach((ingredient, index) => {
+                    response.data.ingredients.forEach((ingredient, index = 1) => {
                         setForm(prevState => {
-                            return {
+                            return { 
                                 ...prevState,
                                 ingredients: [
                                     ...prevState.ingredients,
-                                    { id: index, quantity: ingredient[0], libelle: ingredient[2] }
+                                    { id: index, quantity: ingredient[0], libelle: ingredient[1] }
                                 ]
                             }
                         })
@@ -80,12 +81,16 @@ function AddRecipe() {
                             }
                         })
                     })
+                    setShowForm(true)
                 })
                 .catch(response => setAlertMessage(<Alert message={response.message} severity="success" />))
         }
+        else setShowForm(true)
     }, [])
 
     return (
+        <>
+        { showForm && 
         <Formik 
             initialValues = {{
                 titre: form.titre,
@@ -97,24 +102,33 @@ function AddRecipe() {
                 etapes: form.etapes,
                 photo: form.photo
             }}
-            onSubmit={values => {
+            onSubmit={(values, event) => {
                 let etapes = []
                 values.etapes.map(preparation => etapes.push(preparation.etape))
                 values = {...values, ingredients: values.ingredients.map(ingredient => Object.values(ingredient).splice(1))}
                 values = {...values, etapes}
                 setAlertMessage()
                 
-                restfullProvider.createRecipe(values)
+                if(history.location.pathname === "/add-recipe"){
+                    restfullProvider.createRecipe(values)
                     .then(() => {
                         setAlertMessage(<Alert message="Recette créée avec succès !" severity="success" />)
                         history.push('/');
                     })
-                    .catch(() => {
-                        setAlertMessage(<Alert message="Un problème est survenu, veuillez réessayer" severity="error" />)
+                    .catch(() => setAlertMessage(<Alert message="Un problème est survenu, veuillez réessayer" severity="error" />))
+                }
+                else{
+                    restfullProvider.updateRecipe(id, values)
+                    .then(() => {
+                        setAlertMessage(<Alert message="Recette mise à jour avec succès !" severity="success" />)
+                        history.push('/');
                     })
+                    .catch(() => setAlertMessage(<Alert message="Aucune recette trouvée" severity="error" />))
+                }
+                
             }}
             render={({values, handleChange, setFieldValue}) => (
-            <Container style={{ marginTop: '2%' }}>
+            <Container style={{ marginTop: '2%', marginBottom: '4%' }}>
                 <Form>
                     <Box display="block" mb={4}>
                         <TextField 
@@ -221,7 +235,6 @@ function AddRecipe() {
                                             name={`ingredients.[${index}].quantity`}
                                             value={ingredient.quantity}
                                             onChange={handleChange}
-                                            required
                                             style={{ marginRight: '2%' }} 
                                         />
                                         <TextField 
@@ -290,28 +303,29 @@ function AddRecipe() {
                         </Box>
 
                     { history.location.pathname !== "/add-recipe" ? 
-                        <Button color="primary" variant="contained" type="submit">
+                        <Button color="primary" variant="contained" id="edit" type="submit">
                             Mettre à jour la recette
                         </Button>
                     :
-                        <Button color="primary" variant="contained" type="submit">
+                        <Button color="primary" variant="contained" id="add" type="submit">
                             Ajouter une nouvelle recette
                         </Button>
                     }
                     
 
-                    <pre style={{ textAlign: "left" }}>
+                    {/* <pre style={{ textAlign: "left" }}>
                     <strong>Values</strong>
                     <br />
                     {JSON.stringify(values, null, 2)}
-                    </pre>
+                    </pre> */}
                 </Form>
 
                 {alertMessage}
             </Container>
             )}
         />
-        
+        }
+        </>
     );
 }
 

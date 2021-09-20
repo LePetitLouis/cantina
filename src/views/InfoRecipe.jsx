@@ -28,7 +28,7 @@ function InfoRecipe() {
     }, [])
 
     return (
-        <Container style={{ marginTop: '2%' }}>
+        <Container style={{ marginTop: '2%', marginBottom: '4%' }}>
             {recipe && 
             <>
                 <Typography variant="h3" component="h2" align="center" lineHeight={10}>
@@ -39,7 +39,10 @@ function InfoRecipe() {
                     {recipe.description}
                 </Typography>
 
-                <img src={recipe.photo} alt={recipe.titre} />
+                <Box m={2} style={{ textAlign: 'center' }}>
+                    <img src={recipe.photo} alt={recipe.titre} />
+                </Box>
+                
 
                 <Box display="flex" justifyContent="center" mb={4} mt={4}>
                     <Box display="flex" mr={4}>

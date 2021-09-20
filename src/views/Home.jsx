@@ -64,7 +64,7 @@ function Home() {
 
     return (
         <Container>
-            <Box mt={2}>
+            <Box mt={2} mb={4}>
                 <Grid 
                     container 
                     spacing={2}

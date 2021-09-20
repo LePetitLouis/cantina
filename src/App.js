@@ -5,7 +5,8 @@ import Home from './views/Home'
 import AddRecipe from './views/AddRecipe'
 import InfoRecipe from './views/InfoRecipe'
 import Header from './components/Header'
-//import Footer from './components/Footer'
+import Footer from './components/Footer'
+import NotFound from './views/NotFound'
 
 import FilterContext from './services/filterContext'
 
@@ -37,10 +38,15 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/add-recipe" exact component={AddRecipe} />
-          <Route path="/recipe/:id" component={InfoRecipe} />
-          <Route path="/edit-recipe/:id" component={AddRecipe} />
+          <Route path="/recipe/:id" exact component={InfoRecipe} />
+          <Route path="/edit-recipe/:id" exact component={AddRecipe} />
+          <Route component={NotFound} />
         </Switch>
       </main>
+
+      <footer>
+        <Footer />
+      </footer>
 
       </Router>
     </FilterContext.Provider>

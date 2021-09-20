@@ -40,15 +40,16 @@ function Recipe({id, titre, description, photo, onListRecipes}) {
                 </CardContent>
             </Link>
             <CardActions>
+                <Link to={{ pathname: '/edit-recipe/'+ id }}>
                 <Button 
                     variant="contained" 
                     color="primary"
                     size="small" 
                     startIcon={<CreateIcon />}
-                    to={{ pathname: '/update-recipe/'+ id }}
                 >
                     Modifier
                 </Button>
+                </Link>
                 <Button 
                     variant="contained"
                     color="secondary"
