@@ -17,12 +17,12 @@ yarn build
 
 # Cantina API
 
-### Server setup
+### Server path
 ```
 cd server
 ```
 
-### Server
+### Server setup
 ```
 npm install
 ```
