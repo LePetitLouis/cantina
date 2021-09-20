@@ -1,6 +1,6 @@
 # Cantina Project
 
-## Project setup
+### Project setup
 ```
 npm install
 ```
