@@ -9,8 +9,8 @@ class restfullProvider {
         return http.get(`/recipe/${id}`)
     }
 
-    updateRecipe() {
-        return http.put()
+    updateRecipe(id, recipe) {
+        return http.put(`/recipe/${id}`, recipe)
     }
 
     deleteRecipe(id) {

@@ -7,12 +7,9 @@ import restfullProvider from '../services/restfullProvider.js';
 import Alert from '../components/Alert.jsx';
 
 //Material components
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {Container, Grid, Typography, Box} from '@material-ui/core';
 
-// Icon
+// Material icon
 import TimerIcon from '@material-ui/icons/Timer';
 import GroupIcon from '@material-ui/icons/Group';
 import ReportIcon from '@material-ui/icons/Report';
@@ -27,11 +24,11 @@ function InfoRecipe() {
     useEffect(() => {
         restfullProvider.getRecipeById(id)
             .then(response => setRecipe(response.data))
-            .catch(() => setIsError(true))
+            .catch(() => setIsError(<Alert message="Problème de connection" severity="error" />))
     }, [])
 
     return (
-        <Container style={{ marginTop: '2%' }}>
+        <Container style={{ marginTop: '2%', marginBottom: '4%' }}>
             {recipe && 
             <>
                 <Typography variant="h3" component="h2" align="center" lineHeight={10}>
@@ -42,7 +39,10 @@ function InfoRecipe() {
                     {recipe.description}
                 </Typography>
 
-                <img src={recipe.photo} alt={recipe.titre} />
+                <Box m={2} style={{ textAlign: 'center' }}>
+                    <img src={recipe.photo} alt={recipe.titre} />
+                </Box>
+                
 
                 <Box display="flex" justifyContent="center" mb={4} mt={4}>
                     <Box display="flex" mr={4}>
@@ -97,7 +97,7 @@ function InfoRecipe() {
                 ))}
             </>
             }
-            {isError && <Alert message="Problème de connection" severity="error" />}
+            {isError}
         </Container>
     );
 }
