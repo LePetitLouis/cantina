@@ -27,6 +27,12 @@ function InfoRecipe() {
             .catch(() => setIsError(<Alert message="Problème de connection" severity="error" />))
     }, [])
 
+    const convertMinToHour = (tempsPreparation) => {
+        const hour = Math.floor(tempsPreparation / 60)
+        const min = tempsPreparation % 60
+        return hour === 0 ? `${min}min` : `${hour}h ${min}min`
+    }
+
     return (
         <Container style={{ marginTop: '2%', marginBottom: '4%' }}>
             {recipe && 
@@ -40,7 +46,7 @@ function InfoRecipe() {
                 </Typography>
 
                 <Box m={2} style={{ textAlign: 'center' }}>
-                    <img src={recipe.photo} alt={recipe.titre} />
+                    <img src={recipe.photo ? recipe.photo : "https://www.oxygene-numerique.fr/media/catalog/product/cache/1/thumbnail/600x/17f82f742ffe127f42dca9de82fb58b1/v/i/visuel-non-disponible_15.jpg"} alt={recipe.titre} />
                 </Box>
                 
 
@@ -48,7 +54,7 @@ function InfoRecipe() {
                     <Box display="flex" mr={4}>
                         <TimerIcon fontSize="large" color="secondary" />
                         <Typography variant="h6" component="h2" style={{ marginLeft: '10px' }}>
-                            {recipe.tempsPreparation} min
+                            {convertMinToHour(recipe.tempsPreparation)}
                         </Typography>
                     </Box>
                     <FiberManualRecordIcon fontSize="small" style={{ alignSelf: 'center' }} />

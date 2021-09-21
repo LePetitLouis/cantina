@@ -106,9 +106,9 @@ function Header() {
                         <Accordion>
                             <Box display="flex" pt={1} pb={1} pl={1}>
                                 <Typography>Mes filtres: </Typography>
-                                {listFilter.level && <Chip label={listFilter.level} onDelete={() => addFilter("level", listFilter.level)} color="primary" size="small" style={{ marginRight: '5px' }} />}
-                                {listFilter.numberPerson && <Chip label={listFilter.numberPerson === 1 ? "1-3 personnes" : listFilter.numberPerson === 2 ? "4-6 personnes" : "7 personnes et plus"} onDelete={() => addFilter("numberPerson", listFilter.numberPerson)} color="primary" size="small" style={{ marginRight: '5px' }} />}
-                                {listFilter.preparationTime && <Chip label={listFilter.preparationTime === 15 ? "Moins de 15 minutes" : listFilter.preparationTime === 30 ? "Moins de 30 minutes" : "Moins de 45 minutes"} onDelete={() => addFilter("preparationTime", listFilter.preparationTime)} color="primary" size="small" style={{ marginRight: '5px' }} />}
+                                {listFilter.level && <Chip label={listFilter.level} onDelete={() => addFilter("level", listFilter.level)} color="primary" size="small" style={{ marginLeft: '5px' }} />}
+                                {listFilter.numberPerson && <Chip label={listFilter.numberPerson === 1 ? "1-3 personnes" : listFilter.numberPerson === 2 ? "4-6 personnes" : "7 personnes et plus"} onDelete={() => addFilter("numberPerson", listFilter.numberPerson)} color="primary" size="small" style={{ marginLeft: '5px' }} />}
+                                {listFilter.preparationTime && <Chip label={listFilter.preparationTime === 15 ? "Moins de 15 minutes" : listFilter.preparationTime === 30 ? "Moins de 30 minutes" : "Moins de 45 minutes"} onDelete={() => addFilter("preparationTime", listFilter.preparationTime)} color="primary" size="small" style={{ marginLeft: '5px' }} />}
                             </Box>
                         </Accordion>
                         }

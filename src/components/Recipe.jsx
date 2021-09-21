@@ -26,7 +26,7 @@ function Recipe({id, titre, description, photo, onListRecipes}) {
 
                 <CardMedia
                     component="img"
-                    image={photo}
+                    image={photo ? photo : "https://www.oxygene-numerique.fr/media/catalog/product/cache/1/thumbnail/600x/17f82f742ffe127f42dca9de82fb58b1/v/i/visuel-non-disponible_15.jpg"}
                     title={titre}
                 />
 
