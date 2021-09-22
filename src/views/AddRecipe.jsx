@@ -28,15 +28,8 @@ function AddRecipe() {
         niveau: '',
         personnes: 0,
         tempsPreparation: '',
-        ingredients: [{
-            id: Math.random(),
-            quantity: '',
-            libelle: ''
-        }],
-        etapes: [{
-            id: Math.random(),
-            etape: ''
-        }],
+        ingredients: [],
+        etapes: [],
         photo: ''
     })
     const [showForm, setShowForm] = useState(false)
@@ -85,7 +78,23 @@ function AddRecipe() {
                 })
                 .catch(response => setAlertMessage(<Alert message={response.message} severity="success" />))
         }
-        else setShowForm(true)
+        else {
+            setForm(prevState => {
+                return {
+                    ...prevState,
+                    ingredients: [{
+                        id: Math.random(),
+                        quantity: '',
+                        libelle: ''
+                    }],
+                    etapes: [{
+                        id: Math.random(),
+                        etape: ''
+                    }]
+                }
+            })
+            setShowForm(true)
+        } 
     }, [])
 
     return (
@@ -311,13 +320,6 @@ function AddRecipe() {
                             Ajouter une nouvelle recette
                         </Button>
                     }
-                    
-
-                    {/* <pre style={{ textAlign: "left" }}>
-                    <strong>Values</strong>
-                    <br />
-                    {JSON.stringify(values, null, 2)}
-                    </pre> */}
                 </Form>
 
                 {alertMessage}
