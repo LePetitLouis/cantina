@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Material components
-import { Box, Divider, Typography, AppBar } from '@material-ui/core';
+import { Box, Divider, Typography } from '@material-ui/core';
 
 function Navbar() {
     return (

@@ -50,7 +50,7 @@ function InfoRecipe() {
                 </Box>
                 
 
-                <Box display="flex" justifyContent="center" mb={4} mt={4}>
+                <Box display="flex" flexWrap="wrap" justifyContent="center" mb={4} mt={4}>
                     <Box display="flex" mr={4}>
                         <TimerIcon fontSize="large" color="secondary" />
                         <Typography variant="h6" component="h2" style={{ marginLeft: '10px' }}>
